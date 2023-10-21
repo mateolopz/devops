@@ -14,9 +14,13 @@ router = APIRouter(
     tags=["blacklists"],
 )
 
-@router.post("/", response_model=BlacklistEmail, status_code=201)
+@router.post("/", status_code=201)
 def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db)):
-    return logic.blacklist_email(db, email)
+    if logic.get_blacklist(db, email.email):
+        return JSONResponse(content="Este email ya se encuentra en la lista negra", status_code=400)
+    if logic.blacklist_email(db, email):
+        return JSONResponse(content="Email agregado a la lista negra", status_code=201)
+    return JSONResponse(content="Error al agregar email a la lista negra", status_code=400)
 
 @router.get("/{email}", response_model=BlacklistReason, status_code=200)
 def get_blacklist_by_email(email: str, db: Session = Depends(get_db)):

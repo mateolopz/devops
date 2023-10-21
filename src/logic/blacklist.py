@@ -14,7 +14,7 @@ def blacklist_email(db: Session, blacklist: BlacklistEmail):
     db.add(db_blacklist)
     db.commit()
     db.refresh(db_blacklist)
-    return BlacklistEmail(email=db_blacklist.email, app_uuid=db_blacklist.app_uuid, blocked_reason=db_blacklist.blocked_reason)
+    return db_blacklist
 
 def get_blacklist(db: Session, email: str):
     return db.query(Blacklist).filter(Blacklist.email == email).first()
