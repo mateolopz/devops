@@ -1,5 +1,5 @@
 import uuid
-from fastapi import APIRouter, Depends, Response, Header
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from src.db.db import get_db
 from sqlalchemy.orm import Session
@@ -7,6 +7,7 @@ from src.db.schemas.blacklist import (
     BlacklistEmail,
     BlacklistReason,
 )
+from fastapi_jwt_auth import AuthJWT
 import src.logic.blacklist as logic
 
 router = APIRouter(
@@ -15,16 +16,18 @@ router = APIRouter(
 )
 
 @router.post("/", status_code=201)
-def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db)):
-    if logic.get_blacklist(db, email.email):
-        return JSONResponse(content="Este email ya se encuentra en la lista negra", status_code=400)
-    if logic.blacklist_email(db, email):
-        return JSONResponse(content="Email agregado a la lista negra", status_code=201)
-    return JSONResponse(content="Error al agregar email a la lista negra", status_code=400)
+def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db), authorize: AuthJWT = Depends()):
+    #authorize.create_access_token(subject=email.app_uuid, expires_time=False))
+    authorize.jwt_required()
+    blacklist = logic.blacklist_email(db, email)
+    if not blacklist:
+        raise HTTPException(status_code=404, detail="Email ya se encuentra registrado")
+    return JSONResponse(content="Email agregado a la lista negra", status_code=201)
 
 @router.get("/{email}", response_model=BlacklistReason, status_code=200)
-def get_blacklist_by_email(email: str, db: Session = Depends(get_db)):
+def get_blacklist_by_email(email: str, db: Session = Depends(get_db), authorize: AuthJWT = Depends()):
+    authorize.jwt_required()
     blacklist = logic.get_blacklist(db, email)
     if not blacklist:
-        return JSONResponse(content=False)
+        return JSONResponse(content={"found": False}, status_code=404)
     return BlacklistReason(found=True, blocked_reason=blacklist.blocked_reason)

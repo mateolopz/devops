@@ -1,0 +1,146 @@
+{
+	"info": {
+		"_postman_id": "d70935e0-bd11-4e35-9ccc-407f97148474",
+		"name": "Blacklist",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29481438"
+	},
+	"item": [
+		{
+			"name": "Blacklist Email",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDIwMTExNDAiLCJpYXQiOjE2OTc5MTUwOTEsIm5iZiI6MTY5NzkxNTA5MSwianRpIjoiYjE1YjlhMmMtMDE4Ni00MjAzLWJkMGQtY2FlOGNiNjE4ZGE2IiwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjpmYWxzZX0.JctlhfXr864hu8xnThD4iLDfO5N0Tm_k-CVy6Rpe530",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"m.ruizg\",\r\n    \"app_uuid\":\"202011140\",\r\n    \"blocked_reason\": \"Descripcion\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/blacklists",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"blacklists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Blacklist Email No Token",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"m.ruizg\",\r\n    \"app_uuid\":\"202011140\",\r\n    \"blocked_reason\": \"Descripcion\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/blacklists",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"blacklists"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Blacklisted Email",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDIwMTExNDAiLCJpYXQiOjE2OTc5MTUwOTEsIm5iZiI6MTY5NzkxNTA5MSwianRpIjoiYjE1YjlhMmMtMDE4Ni00MjAzLWJkMGQtY2FlOGNiNjE4ZGE2IiwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjpmYWxzZX0.JctlhfXr864hu8xnThD4iLDfO5N0Tm_k-CVy6Rpe530",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/blacklists/m.ruizg",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"blacklists",
+						"m.ruizg"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Unlisted Email",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDIwMTExNDAiLCJpYXQiOjE2OTc5MTUwOTEsIm5iZiI6MTY5NzkxNTA5MSwianRpIjoiYjE1YjlhMmMtMDE4Ni00MjAzLWJkMGQtY2FlOGNiNjE4ZGE2IiwidHlwZSI6ImFjY2VzcyIsImZyZXNoIjpmYWxzZX0.JctlhfXr864hu8xnThD4iLDfO5N0Tm_k-CVy6Rpe530",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/blacklists/m.zamorab",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"blacklists",
+						"m.zamorab"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

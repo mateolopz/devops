@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     DB_HOST: str = os.getenv("DB_HOST")
     DB_PORT: str = os.getenv("DB_PORT")
 
+class AuthSettings(BaseSettings):
+    authjwt_secret_key:str = os.getenv('AUTHJWT_SECRET_KEY')
+
     class Config:
         case_sensitive = True
 
