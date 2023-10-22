@@ -1,4 +1,3 @@
-import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from src.db.db import get_db
@@ -14,6 +13,10 @@ router = APIRouter(
     prefix="/blacklists",
     tags=["blacklists"],
 )
+
+@router.get("/ping")
+def ping():
+    return "pong"
 
 @router.post("/", status_code=201)
 def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db), authorize: AuthJWT = Depends()):

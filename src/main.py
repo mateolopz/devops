@@ -1,8 +1,7 @@
 from fastapi import FastAPI
-from src import routers
 from src.db.db import engine
 from src.db.db import Base
-from src.routers import blacklist
+from src.routers import blacklist, health
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import Response
 from fastapi import Request, status
@@ -14,7 +13,6 @@ from src.core.config.settings import AuthSettings
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-
 
 @AuthJWT.load_config
 def get_config():
@@ -33,10 +31,5 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
         content={"detail": exc.message}
     )
 
-
-@routers.get("/", status_code=200)
-def health():
-    return Response(status_code=200)
-
-
 app.include_router(blacklist.router)
+app.include_router(health.router)
