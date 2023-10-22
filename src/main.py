@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from src import routers
 from src.db.db import engine
 from src.db.db import Base
 from src.routers import blacklist
@@ -14,13 +15,16 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
 @AuthJWT.load_config
 def get_config():
     return AuthSettings()
 
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request, exc):
     return Response(status_code=400)
+
 
 @app.exception_handler(AuthJWTException)
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
@@ -28,5 +32,11 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={"detail": exc.message}
     )
+
+
+@routers.get("/", status_code=200)
+def health():
+    return Response(status_code=200)
+
 
 app.include_router(blacklist.router)
