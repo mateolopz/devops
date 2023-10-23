@@ -14,10 +14,6 @@ router = APIRouter(
     tags=["blacklists"],
 )
 
-@router.get("/ping")
-def ping():
-    return "pong"
-
 @router.post("/", status_code=201)
 def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db), authorize: AuthJWT = Depends()):
     #authorize.create_access_token(subject=email.app_uuid, expires_time=False))
