@@ -4,3 +4,5 @@ pydantic==1.10.9
 sqlalchemy==2.0.15
 psycopg2_binary==2.9.7
 fastapi-jwt-auth
+python-dotenv~=1.0.0
+pytest==7.4.3
