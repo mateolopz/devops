@@ -14,6 +14,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
+
 @AuthJWT.load_config
 def get_config():
     return AuthSettings()
@@ -30,6 +31,7 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
         status_code=status.HTTP_401_UNAUTHORIZED,
         content={"detail": exc.message}
     )
+
 
 app.include_router(blacklist.router)
 app.include_router(health.router)

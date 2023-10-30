@@ -6,6 +6,7 @@ from src.db.schemas.blacklist import BlacklistEmail
 
 from ..core.config.settings import Settings
 from sqlalchemy.exc import IntegrityError
+
 settings = Settings()
 
 
@@ -18,9 +19,8 @@ def blacklist_email(db: Session, blacklist: BlacklistEmail):
         return db_blacklist
     except IntegrityError:
         db.rollback()
-        return 
+        return
+
 
 def get_blacklist(db: Session, email: str):
     return db.query(Blacklist).filter(Blacklist.email == email).first()
-
-
