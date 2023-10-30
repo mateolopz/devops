@@ -14,14 +14,16 @@ router = APIRouter(
     tags=["blacklists"],
 )
 
+
 @router.post("/", status_code=201)
 def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db), authorize: AuthJWT = Depends()):
-    #authorize.create_access_token(subject=email.app_uuid, expires_time=False))
+    # authorize.create_access_token(subject=email.app_uuid, expires_time=False))
     authorize.jwt_required()
     blacklist = logic.blacklist_email(db, email)
     if not blacklist:
         raise HTTPException(status_code=404, detail="Email ya se encuentra registrado")
     return JSONResponse(content="Email agregado a la lista negra", status_code=201)
+
 
 @router.get("/{email}", response_model=BlacklistReason, status_code=200)
 def get_blacklist_by_email(email: str, db: Session = Depends(get_db), authorize: AuthJWT = Depends()):
