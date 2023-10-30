@@ -23,7 +23,7 @@ def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db), authori
 
     # Validate email structure
     email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-    find_valid_email = email_regex.findall(email)
+    find_valid_email = email_regex.findall(email.email)
     if len(find_valid_email) == 0:
         raise HTTPException(status_code=400, detail="El email dado no es valido")
 
