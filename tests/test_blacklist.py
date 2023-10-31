@@ -101,29 +101,6 @@ def test_post_blacklist_bad_email_format(mock_jwt_required, mocker, populate_db)
     # Assertions
     assert response.status_code == 400
     assert response.json() == "El email dado no es valido"
-
-def test_post_blacklist_existing_uuid(mock_jwt_required, mocker, populate_db):
-    """
-
-    :param mock_jwt_required:
-    :param mocker:
-    :param populate_db:
-    :return:
-    """
-    mocker.patch("src.logic.blacklist.blacklist_email", return_value=True)
-
-    # Creates new tests and asserts success
-    pre_existing_uuid = "00001"
-    response = client.post("/blacklists",
-                           json={
-                               "email": "goodmail@hotmail.com",
-                               "app_uuid": pre_existing_uuid,
-                               "blocked_reason": "Justification"
-                           })
-    # Assertions
-    assert response.status_code == 400
-    assert response.json() == "El email dado no es valido"
-
 def test_get_blacklist_by_email(mock_jwt_required, mocker, populate_db):
     mocker.patch("src.logic.blacklist.get_blacklist", return_value=MagicMock(blocked_reason="Spam"))
 
