@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from src.db.db import get_db
 import re
@@ -17,9 +17,18 @@ router = APIRouter(
 
 
 @router.post("/", status_code=201)
-def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db), authorize: AuthJWT = Depends()):
+def post_blacklist(email: BlacklistEmail, request: Request, db: Session = Depends(get_db),
+                   authorize: AuthJWT = Depends()):
     # authorize.create_access_token(subject=email.app_uuid, expires_time=False))
     authorize.jwt_required()
+
+    # Extract client IP address
+    client_ip = request.client.host
+
+    # Validate IP address format
+    # TODO : esto puede ser innecesario, toca revisar el return type de request.client.host
+    if not logic.validate_host_ip(client_ip):
+        raise HTTPException(status_code=400, detail="La IP dada no es valida")
 
     # Validate email structure
     if not logic.validate_email(email.email):
