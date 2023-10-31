@@ -22,10 +22,16 @@ def post_blacklist(email: BlacklistEmail, db: Session = Depends(get_db), authori
     authorize.jwt_required()
 
     # Validate email structure
-    email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-    find_valid_email = email_regex.findall(email.email)
-    if len(find_valid_email) == 0:
+    if not logic.validate_email(email.email):
         raise HTTPException(status_code=400, detail="El email dado no es valido")
+
+    # Validate uuid
+    if not logic.validate_uuid(email.app_uuid):
+        raise HTTPException(status_code=400, detail="El app uuid dado no es valido")
+
+    # Validate description length
+    if not logic.validate_blocked_description_length(email.blocked_reason):
+        raise HTTPException(status_code=400, detail="El largo de la descripcion no es valido")
 
     # Attempt adding email to database
     blacklist = logic.blacklist_email(db, email)
@@ -39,9 +45,7 @@ def get_blacklist_by_email(email: str, db: Session = Depends(get_db), authorize:
     authorize.jwt_required()
 
     # Validate email structure
-    email_regex = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-    find_valid_email = email_regex.findall(email)
-    if len(find_valid_email) == 0:
+    if not logic.validate_email(email):
         raise HTTPException(status_code=400, detail="El email dado no es valido")
 
     # Check DB to see if the email exists
