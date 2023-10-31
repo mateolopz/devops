@@ -8,3 +8,4 @@ class Blacklist(Base):
     email = Column(String, primary_key=True)
     app_uuid = Column(String)
     blocked_reason = Column(String)
+    host_ip = Column(String)
