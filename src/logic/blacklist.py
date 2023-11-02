@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.dialects.postgresql import UUID
 from src.db.models.blacklist import Blacklist
 
-from src.db.schemas.blacklist import BlacklistEmail
+from src.db.schemas.blacklist import BlacklistEmail, BlacklistEmailPost
 import re
 from ..core.config.settings import Settings
 from sqlalchemy.exc import IntegrityError
@@ -38,17 +38,14 @@ def validate_uuid(uuid: str) -> bool:
     return bool(uuid_regex.match(uuid))
 
 
-def validate_host_ip(ip: str) -> bool:
-    # TODO: Check if the client.host method returns IPv6 or IPv4
-    ipv4_regex = re.compile(r'^[0-9]{3}.[0-9]{3}.[0-9]{3}.[0-9]{3}')
-
-    # TODO: Buscar este regex, las reglas de IPv6 son mas particulares con lo de abreviaciones
-    ipv6_regex = re.compile(r'^[0-9a-z]{4}:')
-    # fe80::5149:7dc3:efd7:83cd%69
-
-    ip_match = ipv4_regex.match(ip) or ipv6_regex.match(ip)
-    return bool(ip_match)
-
-
 def validate_blocked_description_length(s: str) -> bool:
     return len(s) <= 255
+
+
+def convert_to_blacklist_email(blacklist_email_post: BlacklistEmailPost, client_ip: str) -> BlacklistEmail:
+    return BlacklistEmail(
+        email=blacklist_email_post.email,
+        app_uuid=blacklist_email_post.app_uuid,
+        blocked_reason=blacklist_email_post.blocked_reason,
+        client_ip=client_ip
+    )

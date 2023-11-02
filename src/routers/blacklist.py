@@ -5,7 +5,7 @@ import re
 from sqlalchemy.orm import Session
 from src.db.schemas.blacklist import (
     BlacklistEmail,
-    BlacklistReason,
+    BlacklistReason, BlacklistEmailPost,
 )
 from fastapi_jwt_auth import AuthJWT
 import src.logic.blacklist as logic
@@ -17,18 +17,13 @@ router = APIRouter(
 
 
 @router.post("/", status_code=201)
-def post_blacklist(email: BlacklistEmail, request: Request, db: Session = Depends(get_db),
+def post_blacklist(email: BlacklistEmailPost, request: Request, db: Session = Depends(get_db),
                    authorize: AuthJWT = Depends()):
     # authorize.create_access_token(subject=email.app_uuid, expires_time=False))
     authorize.jwt_required()
 
     # Extract client IP address
     client_ip = request.client.host
-
-    # Validate IP address format
-    # TODO : esto puede ser innecesario, toca revisar el return type de request.client.host
-    if not logic.validate_host_ip(client_ip):
-        raise HTTPException(status_code=400, detail="La IP dada no es valida")
 
     # Validate email structure
     if not logic.validate_email(email.email):
@@ -42,8 +37,11 @@ def post_blacklist(email: BlacklistEmail, request: Request, db: Session = Depend
     if not logic.validate_blocked_description_length(email.blocked_reason):
         raise HTTPException(status_code=400, detail="El largo de la descripcion no es valido")
 
+    # Convert model to include the colected ip address
+    formated_email = logic.convert_to_blacklist_email(email,client_ip)
+
     # Attempt adding email to database
-    blacklist = logic.blacklist_email(db, email)
+    blacklist = logic.blacklist_email(db, formated_email)
     if not blacklist:
         raise HTTPException(status_code=404, detail="Email ya se encuentra registrado")
     return JSONResponse(content="Email agregado a la lista negra", status_code=201)
@@ -61,4 +59,4 @@ def get_blacklist_by_email(email: str, db: Session = Depends(get_db), authorize:
     blacklist = logic.get_blacklist(db, email)
     if not blacklist:
         return JSONResponse(content={"found": False}, status_code=404)
-    return BlacklistReason(found=True, blocked_reason=blacklist.blocked_reason)
+    return BlacklistReason(found=True, blocked_reason=blacklist.blocked_reason,client_ip=blacklist.client_ip)
