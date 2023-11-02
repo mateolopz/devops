@@ -59,4 +59,5 @@ def get_blacklist_by_email(email: str, db: Session = Depends(get_db), authorize:
     blacklist = logic.get_blacklist(db, email)
     if not blacklist:
         return JSONResponse(content={"found": False}, status_code=404)
-    return BlacklistReason(found=True, blocked_reason=blacklist.blocked_reason,client_ip=blacklist.client_ip)
+    #return BlacklistReason(found=True, blocked_reason=blacklist.blocked_reason, client_ip=blacklist.client_ip)
+    return BlacklistReason(found=True, blocked_reason=blacklist.blocked_reason)

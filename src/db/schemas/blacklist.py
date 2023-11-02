@@ -21,4 +21,4 @@ class BlacklistEmailPost(Blacklist):
 class BlacklistReason(Blacklist):
     found: bool
     blocked_reason: str
-    client_ip: str
+    #lient_ip: str
